@@ -2,7 +2,7 @@ import conf as CFG
 from get_total_hotel_nums import get_total_hotel_nums
 
 
-def get_urls(url_search) ->list:
+def get_urls(url_search) -> list:
     total_hotel_nums = get_total_hotel_nums(url_search)
     url_list = [url_search]
     url_base = url_search[:-1]
