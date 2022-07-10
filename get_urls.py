@@ -4,6 +4,9 @@ from create_url import create_url
 
 
 def get_urls() -> list:
+    """
+    :return: list of urls of all page in the search
+    """
     url = create_url()
     total_hotel_nums = get_total_hotel_nums(url)
     url_list = [url]
