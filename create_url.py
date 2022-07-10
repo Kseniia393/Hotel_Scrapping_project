@@ -6,7 +6,7 @@ def create_url(city='Tel-Aviv', country='Israel', off_set=0, date_in='2022-12-31
           "&group_adults={group_adults}" \
           "&group_children=0&order=score" \
           "&ss={city}%2C%20{country}" \
-          "&selected_currency=NIS" \
+          "&selected_currency=USD" \
           "&offset={limit}".format(
             check_in=date_in,
             check_out=date_out,
