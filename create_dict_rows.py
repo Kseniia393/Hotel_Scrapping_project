@@ -36,7 +36,12 @@ def create_dict_rows():
                 reviews = reviews.text
             else:
                 reviews = None
-            # reviews = int(re.findall(r'\d+', reviews)[0])
+
+            url = hotel.findChild('a').get('href')
+
             dict_rows.append({'hotel_name': name, 'location': location,
-                              'price': price, 'score': score, 'reviews': reviews})
+                              'price': price, 'score': score, 'reviews': reviews, 'url': url})
+
+
+
     return dict_rows
