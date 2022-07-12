@@ -14,4 +14,10 @@ def write_to_csv():
         writer.writeheader()
         writer.writerows(dict_rows)
 
-write_to_csv()
+
+def main():
+    write_to_csv()
+
+
+if __name__ == '__main__':
+    main()

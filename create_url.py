@@ -19,10 +19,9 @@ def create_url(off_set=0):
           "&ss={city}" \
           "&selected_currency=USD" \
           "&offset={limit}".format(
-            check_in=date_in,
-            check_out=date_out,
-            group_adults=count_people,
-            limit=off_set,
-            city=city)
+        check_in=date_in,
+        check_out=date_out,
+        group_adults=count_people,
+        limit=off_set,
+        city=city)
     return url
-
