@@ -5,7 +5,8 @@ from create_url import create_url
 
 def get_urls() -> list:
     """
-    :return: list of urls of all page in the search
+    Function generate all pages of the same search
+    :return: list of urls of all pages in the search
     """
     url = create_url()
     total_hotel_nums = get_total_hotel_nums(url)

@@ -3,6 +3,9 @@ from create_dict_rows import create_dict_rows
 
 
 def write_to_csv():
+    """
+    Function write to csv file all data as a table
+    """
     dict_rows = create_dict_rows()
     hotel_info = ['hotel_name', 'location', 'price', 'score', 'reviews', 'url']
 
