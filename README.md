@@ -37,7 +37,7 @@ But it is advisable to use (c) ITC by Kseniia Konoshko, Anna Lelchuk, Alexey Kon
 | crete_url            | Function create one url with city, country, check in date and check out date, number of page.<br/>**return:** url                                                                       |
 | get_urls             | Function generate all pages of the same search<br/>**return:** list of urls of all pages in the search                                                                                  |
 | create_dict_rows     | Create d dictionary that represent by itself a row of a future table.As a key we use names of the columns.<br/>**return:** list of dictionaries                                         |
-| get_total_hotel_nums | Function parse on the url amd find number of all hotels according to transmitted request date.<br/>Use this value to create offset number.<br/>**return:** integer number of all hotels |
+| get_total_hotel_nums | Function parse on the url amd find number of all hotels according to transmitted request date. Use this value to create offset number.<br/>**return:** integer number of all hotels |
 | get_soup             | Function return soup by url<br/>**return:** soup                                                                                                                                        |
 | write_to_csv         | Function write to csv file all data as a table                                                                                                                                          |
 
