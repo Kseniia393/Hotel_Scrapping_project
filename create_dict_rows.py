@@ -7,7 +7,7 @@ import re
 
 def create_dict_rows():
     """
-    Create d dictionary that represent by itself a row of a future table.
+    Creates a dictionary that represents by itself a row of a future table.
     As a key we use names of the columns.
     :return: list of dictionaries
     """

@@ -4,9 +4,9 @@ from get_soup import get_soup
 
 def get_total_hotel_nums(url_search) -> int:
     """
-    Function parse on the url amd find number of all hotels according to transmitted request date.
-    Use this value to create offset number.
-    :param url_search:
+    Function parses the url and finds number of all hotels according to transmitted request date.
+    Uses this value to create offset number.
+    :param url_search: url of the first search page
     :return: integer number of all hotels
     """
     soup = get_soup(url_search)
