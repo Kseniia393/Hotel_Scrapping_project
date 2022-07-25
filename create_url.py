@@ -3,7 +3,8 @@ import argparse
 def create_url(off_set=0):
     """
     Function creates the initial url for hotel search.
-    Parameters city, check in date and check out date, number of travelers is received from user input
+    Arguments city (-c), check in date (-i), check out date (-o), number of people (-p) are parsed from the CLI.
+    Default arguments: telaviv 2022-12-31 2023-01-01 2
     :param off_set: number of searching page (be contained without remainder on 25)
     :return: url with first page of searching
     """
