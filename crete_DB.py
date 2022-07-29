@@ -26,8 +26,8 @@ connection = pymysql.connect(host='localhost',
 
 make_sql_query("""CREATE TABLE hotels (
                   id_hotel INT PRIMARY KEY AUTO_INCREMENT,
-                  hotel_title VARCHAR(50),
-                  hotel_score INT,
+                  hotel_title VARCHAR(150),
+                  hotel_score FLOAT,
                   hotel_review INT,
                   hotel_loc_score FLOAT,
                   hotel_area VARCHAR(50),
@@ -38,24 +38,24 @@ make_sql_query("""CREATE TABLE facilities (
                   facilities_title VARCHAR(50))""")
 
 make_sql_query("""CREATE TABLE hotels_facilities (
-                  id_hotel INT NOT NULL,
-                  id_facilities INT NOT NULL,
+                  id INT PRIMARY KEY AUTO_INCREMENT,
+                  id_hotel INT,
+                  id_facilities INT,
                   FOREIGN KEY (id_hotel) REFERENCES hotels(id_hotel),
-                  FOREIGN KEY (id_facilities) REFERENCES facilities(id_facilities),
-                  PRIMARY KEY (id_hotel, id_facilities))""")
+                  FOREIGN KEY (id_facilities) REFERENCES facilities(id_facilities))""")
 
 make_sql_query("""CREATE TABLE search_params (
                   id_search INT PRIMARY KEY AUTO_INCREMENT,
+                  city VARCHAR(25),
                   check_in_date DATE,
                   check_out_date DATE,
                   adults INT)""")
 
 make_sql_query("""CREATE TABLE price (
+                  id_price INT PRIMARY KEY AUTO_INCREMENT,
                   id_hotel INT NOT NULL,
                   id_search INT NOT NULL,
                   timestamp DATE,
                   cheapest_price INT,
-                  room_type VARCHAR(50),
                   FOREIGN KEY (id_hotel) REFERENCES hotels(id_hotel),
-                  FOREIGN KEY (id_search) REFERENCES search_params(id_search),
-                  PRIMARY KEY (id_hotel, id_search, timestamp))""")
+                  FOREIGN KEY (id_search) REFERENCES search_params(id_search))""")
