@@ -59,3 +59,9 @@ make_sql_query("""CREATE TABLE price (
                   cheapest_price INT,
                   FOREIGN KEY (id_hotel) REFERENCES hotels(id_hotel),
                   FOREIGN KEY (id_search) REFERENCES search_params(id_search))""")
+
+cursor = connection.cursor()
+cursor.executemany("""INSERT INTO facilities (facilities_title) VALUES (%s)""",
+[('Non-smoking rooms'), ('Business centre'), ('Free parking'), ('24-hour front desk'),
+('Laundry'), ('Airport shuttle')])
+connection.commit()

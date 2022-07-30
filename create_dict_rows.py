@@ -79,13 +79,12 @@ def create_dict_rows():
             cursor.execute(sql_select_id)
             id_hotel = cursor.fetchall()
             if len(id_hotel) != 0:
-                sql_update = f"""UPDATE hotels 
-                                SET hotel_score={hotel_score}, 
-                                    hotel_review={hotel_review}, hotel_loc_score={hotel_loc_score}
-                                WHERE id_hotel={id_hotel[0]['id_hotel']}"""
-                cursor.execute(sql_update)
-                connection.commit()
                 id_hotel = id_hotel[0]['id_hotel']
+                sql_update = """UPDATE hotels SET hotel_score=%s, hotel_review=%s, hotel_loc_score=%s
+                                    WHERE id_hotel=%s"""
+                cursor.execute(sql_update, (hotel_score, hotel_review, hotel_loc_score, id_hotel))
+                connection.commit()
+
             else:
                 sql_insert = """INSERT INTO hotels 
                 (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_area, hotel_city)
