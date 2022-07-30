@@ -151,9 +151,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 non_smoking = False
 
@@ -163,9 +167,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 business_center = False
 
@@ -175,9 +183,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 free_parking = False
 
@@ -187,9 +199,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 front_desk_24_7 = False
 
@@ -199,9 +215,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 laundry = False
 
@@ -211,9 +231,13 @@ def create_dict_rows():
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
-                cursor.execute(sql_insert, (id_hotel, id_facilities))
-                connection.commit()
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                if len(cursor.fetchall()) == 0:
+                    sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
+                    cursor.execute(sql_insert, (id_hotel, id_facilities))
+                    connection.commit()
+                else:
+                    pass
             else:
                 shuttle = False
 
