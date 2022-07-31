@@ -1,12 +1,27 @@
 import csv
-from create_dict_rows import create_dict_rows
+from write_to_db import create_dict_rows
 import re
 import time
-#fake-useragent
+import argparse
+import conf as CFG
 
 
 def main():
-    create_dict_rows()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', "--city", default="Tel Aviv")
+    parser.add_argument('-i', "--check_in_date", default="2022-12-31")
+    parser.add_argument('-o', "--check_out_date", default="2023-01-01")
+    parser.add_argument('-a', "--adults", default="2")
+    parser.add_argument('-p', "--password")
+    args = parser.parse_args()
+    CFG.city = args.city
+    # city = city.replace(" ", "")
+    CFG.check_in_date = args.check_in_date
+    CFG.check_out_date = args.check_out_date
+    CFG.adults = args.adults
+    CFG.PASSWORD = args.password
+
+    create_dict_rows(CFG.city,CFG.check_in_date,CFG.check_out_date,CFG.adults,CFG.PASSWORD)
 
 
 start_time = time.time()

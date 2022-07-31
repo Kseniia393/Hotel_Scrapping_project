@@ -6,19 +6,25 @@ from bs4 import BeautifulSoup
 import re
 import pymysql.cursors
 from datetime import date
+from create_DB import create_db, create_db_tables
+from tqdm.auto import tqdm
 
 
-def create_dict_rows():
+def create_dict_rows(city,check_in_date,check_out_date,adults,PASSWORD):
     """
     Creates a dictionary that represents by itself a row of a future table.
     As a key we use names of the columns.
     :return: list of dictionaries
     """
-    url_list, city, check_in_date, check_out_date, adults = get_urls()
-    response = (grequests.get(link, headers=CFG.HEADERS) for link in url_list)
+    create_db(PASSWORD)
+    create_db_tables(PASSWORD)
+
+    url_list = get_urls(city,check_in_date,check_out_date,adults)
     dict_rows = []
-    for rs in grequests.map(response):
-        soup = BeautifulSoup(rs.text, "html.parser")
+    response = [requests.get(url, headers=CFG.HEADERS) for url in url_list]
+
+    for i in tqdm(range(len(response))):
+        soup = BeautifulSoup(response[i].text, "html.parser")
         hotels = soup.find_all("div",
                                class_='a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942')
 
@@ -69,7 +75,7 @@ def create_dict_rows():
 # WORK WITH DB - TABLE - hotels
             connection = pymysql.connect(host='localhost',
                                          user='root',
-                                         password='DEFAULT_PASSWORD',
+                                         password=PASSWORD,
                                          database='hotels_booking',
                                          cursorclass=pymysql.cursors.DictCursor)
 
@@ -124,20 +130,21 @@ def create_dict_rows():
             cursor.execute(sql_insert, (id_hotel, id_search, date.today(), price))
             connection.commit()
 # --------------------------------------------------------------
-            if 'Staff' in score_dict:
-                staff_score = float(score_dict['Staff'])
-            else:
-                staff_score = None
-
-            if 'Free WiFi' in score_dict:
-                wifi_score = float(score_dict['Free WiFi'])
-            else:
-                wifi_score = None
-
-            if 'Cleanliness' in score_dict:
-                clean_score = float(score_dict['Cleanliness'])
-            else:
-                clean_score = None
+#TODO add do db
+            # if 'Staff' in score_dict:
+            #     staff_score = float(score_dict['Staff'])
+            # else:
+            #     staff_score = None
+            #
+            # if 'Free WiFi' in score_dict:
+            #     wifi_score = float(score_dict['Free WiFi'])
+            # else:
+            #     wifi_score = None
+            #
+            # if 'Cleanliness' in score_dict:
+            #     clean_score = float(score_dict['Cleanliness'])
+            # else:
+            #     clean_score = None
 
 # --------------------------------------------------------------
 # WORK WITH DB - TABLE - facilities AND hotels_facilities
@@ -146,7 +153,6 @@ def create_dict_rows():
             facilities_list = [facility.text.split('\n') for facility in facilities]
             facilities_list = sum(facilities_list, [])
             if 'Non-smoking rooms' in facilities_list:
-                non_smoking = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE 'Non-smoking rooms'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -159,10 +165,9 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                non_smoking = False
+                pass
 
             if 'Business centre' in facilities_list:
-                business_center = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE 'Business centre'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -175,10 +180,9 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                business_center = False
+                pass
 
             if 'Free parking' in facilities_list:
-                free_parking = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE 'Free parking'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -191,10 +195,9 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                free_parking = False
+                pass
 
             if '24-hour front desk' in facilities_list:
-                front_desk_24_7 = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE '24-hour front desk'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -207,10 +210,9 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                front_desk_24_7 = False
+                pass
 
             if 'Laundry' in facilities_list:
-                laundry = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE 'Laundry'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -223,10 +225,9 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                laundry = False
+                pass
 
             if 'Airport shuttle' in facilities_list:
-                shuttle = True
                 sql_select_id = """SELECT id_facilities FROM facilities WHERE facilities_title LIKE 'Airport shuttle'"""
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
@@ -239,7 +240,7 @@ def create_dict_rows():
                 else:
                     pass
             else:
-                shuttle = False
+                pass
 
 
 # --------------------------------------------------------------
