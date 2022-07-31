@@ -5,6 +5,7 @@ import conf as CFG
 
 
 def main():
+    """Parse arguments from CLI and run function write_to_db"""
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', "--city", default="Tel Aviv")
     parser.add_argument('-i', "--check_in_date", default="2022-12-31")

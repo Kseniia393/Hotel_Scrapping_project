@@ -1,4 +1,3 @@
-import grequests
 import requests
 import conf as CFG
 from get_urls import get_urls
@@ -12,15 +11,12 @@ from tqdm.auto import tqdm
 
 def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
     """
-    Creates a dictionary that represents by itself a row of a future table.
-    As a key we use names of the columns.
-    :return: list of dictionaries
+    Parse from the website and write to DB
     """
     create_db(PASSWORD)
     create_db_tables(PASSWORD)
 
-    url_list = get_urls(city,check_in_date,check_out_date,adults)
-    dict_rows = []
+    url_list = get_urls(city, check_in_date, check_out_date, adults)
     response = [requests.get(url, headers=CFG.HEADERS) for url in url_list]
 
     for i in tqdm(range(len(response))):
@@ -57,7 +53,7 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 hotel_review = None
 
             url = hotel.findChild('a').get('href')
-# --------------------------------------------------------------
+            # --------------------------------------------------------------
             rs_hotel = requests.get(url, headers=CFG.HEADERS)
 
             soup = BeautifulSoup(rs_hotel.text, "html.parser")
@@ -71,8 +67,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
             else:
                 hotel_loc_score = None
 
-# --------------------------------------------------------------
-# WORK WITH DB - TABLE - hotels
+            # --------------------------------------------------------------
+            # WORK WITH DB - TABLE - hotels
             connection = pymysql.connect(host='localhost',
                                          user='root',
                                          password=PASSWORD,
@@ -96,13 +92,14 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_area, hotel_city)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
 
-                cursor.execute(sql_insert, (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_area, hotel_city))
+                cursor.execute(sql_insert,
+                               (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_area, hotel_city))
                 connection.commit()
                 sql_select_id = f'SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_title}" AND hotel_city LIKE "{hotel_city}"'
                 cursor.execute(sql_select_id)
                 id_hotel = cursor.fetchall()[0]['id_hotel']
-# --------------------------------------------------------------
-# WORK WITH DB - TABLE - search_params
+            # --------------------------------------------------------------
+            # WORK WITH DB - TABLE - search_params
             sql_select_id = f"""SELECT id_search FROM search_params 
                                 WHERE city LIKE '{city}' AND check_in_date LIKE '{check_in_date}'
                                 AND check_out_date LIKE '{check_out_date}'
@@ -123,14 +120,14 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 id_search = cursor.fetchall()[0]['id_search']
             else:
                 id_search = id_search[0]['id_search']
-# --------------------------------------------------------------
-# WORK WITH DB - TABLE - price
+            # --------------------------------------------------------------
+            # WORK WITH DB - TABLE - price
             sql_insert = """INSERT INTO price (id_hotel, id_search, timestamp, cheapest_price)
                             VALUES (%s, %s, %s, %s)"""
             cursor.execute(sql_insert, (id_hotel, id_search, date.today(), price))
             connection.commit()
-# --------------------------------------------------------------
-#TODO add do db
+            # --------------------------------------------------------------
+            # TODO add do db
             # if 'Staff' in score_dict:
             #     staff_score = float(score_dict['Staff'])
             # else:
@@ -146,8 +143,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
             # else:
             #     clean_score = None
 
-# --------------------------------------------------------------
-# WORK WITH DB - TABLE - facilities AND hotels_facilities
+            # --------------------------------------------------------------
+            # WORK WITH DB - TABLE - facilities AND hotels_facilities
 
             facilities = soup.find('div', class_='hotel-facilities__list')
             facilities_list = [facility.text.split('\n') for facility in facilities]
@@ -157,7 +154,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -172,7 +170,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -187,7 +186,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -202,7 +202,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -217,7 +218,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -232,7 +234,8 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                 cursor.execute(sql_select_id)
                 id_facilities = cursor.fetchall()[0]['id_facilities']
 
-                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""", (id_hotel, id_facilities))
+                cursor.execute("""SELECT id FROM hotels_facilities WHERE id_hotel=%s AND id_facilities=%s""",
+                               (id_hotel, id_facilities))
                 if len(cursor.fetchall()) == 0:
                     sql_insert = """INSERT INTO hotels_facilities (id_hotel, id_facilities) VALUES (%s, %s)"""
                     cursor.execute(sql_insert, (id_hotel, id_facilities))
@@ -241,15 +244,3 @@ def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
                     pass
             else:
                 pass
-
-
-# --------------------------------------------------------------
-#             dict_rows.append({'hotel_name': hotel_title, 'area': area, 'city': city,
-#                               'price': price, 'score': hotel_score, 'reviews': hotel_review,
-#                               'hotel_loc_score': hotel_loc_score, 'staff_score': staff_score,
-#                               'wifi_score': wifi_score, 'clean_score': clean_score,
-#                               'non_smoking': non_smoking, 'business_center': business_center,
-#                               'free_parking': free_parking, 'front_desk_24_7': front_desk_24_7,
-#                               'laundry': laundry, 'shuttle': shuttle})
-
-    return dict_rows

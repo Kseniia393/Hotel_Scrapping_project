@@ -9,7 +9,7 @@ def get_total_hotel_nums(url) -> int:
     """
     Function parses the url and finds number of all hotels according to transmitted request date.
     Uses this value to create offset number.
-    :param url_search: url of the first search page
+    :param url: url of the first search page
     :return: integer number of all hotels
     """
     response = requests.get(url, headers=CFG.HEADERS)
@@ -18,7 +18,8 @@ def get_total_hotel_nums(url) -> int:
     total_hotels = int(re.findall(r'\d+', total_hotels)[0])
     return total_hotels
 
-def create_url(city,check_in_date,check_out_date,adults,off_set=0):
+
+def create_url(city, check_in_date, check_out_date, adults, off_set=0):
     """
     Function creates the initial url for hotel search.
     Arguments city (-c), check in date (-i), check out date (-o), number of people (-p) are parsed from the CLI.
@@ -40,15 +41,15 @@ def create_url(city,check_in_date,check_out_date,adults,off_set=0):
         group_adults=adults,
         limit=off_set,
         city=city)
-
     return url
 
-def get_urls(city,check_in_date,check_out_date,adults) -> tuple[list[Any], Any, Any, Any, Any]:
+
+def get_urls(city, check_in_date, check_out_date, adults) -> tuple[list[Any], Any, Any, Any, Any]:
     """
     Function generate all pages of the same search
     :return: list of urls of all pages in the search
     """
-    url = create_url(city,check_in_date,check_out_date,adults)
+    url = create_url(city, check_in_date, check_out_date, adults)
     total_hotel_nums = get_total_hotel_nums(url)
     url_list = [url]
     url_range = (total_hotel_nums//CFG.HOTELS_PER_PAGE)*CFG.HOTELS_PER_PAGE
