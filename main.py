@@ -1,6 +1,4 @@
-import csv
-from write_to_db import create_dict_rows
-import re
+from write_to_db import write_to_db
 import time
 import argparse
 import conf as CFG
@@ -15,13 +13,12 @@ def main():
     parser.add_argument('-p', "--password")
     args = parser.parse_args()
     CFG.city = args.city
-    # city = city.replace(" ", "")
     CFG.check_in_date = args.check_in_date
     CFG.check_out_date = args.check_out_date
     CFG.adults = args.adults
     CFG.PASSWORD = args.password
 
-    create_dict_rows(CFG.city,CFG.check_in_date,CFG.check_out_date,CFG.adults,CFG.PASSWORD)
+    write_to_db(CFG.city, CFG.check_in_date, CFG.check_out_date, CFG.adults, CFG.PASSWORD)
 
 
 start_time = time.time()

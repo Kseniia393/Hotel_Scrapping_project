@@ -10,7 +10,7 @@ from create_DB import create_db, create_db_tables
 from tqdm.auto import tqdm
 
 
-def create_dict_rows(city,check_in_date,check_out_date,adults,PASSWORD):
+def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
     """
     Creates a dictionary that represents by itself a row of a future table.
     As a key we use names of the columns.
