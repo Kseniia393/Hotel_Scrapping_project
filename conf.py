@@ -11,4 +11,6 @@ check_out_date =''
 adults = ''
 PASSWORD = ''
 
+# these are facilities that we are interested in.
+FACILITIES = ['Non-smoking rooms', 'Business centre', 'Free parking', '24-hour front desk', 'Laundry', 'Airport shuttle']
 

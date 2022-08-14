@@ -31,6 +31,9 @@ def create_db_tables(PASSWORD):
                           hotel_score FLOAT,
                           hotel_review INT,
                           hotel_loc_score FLOAT,
+                          hotel_staff_score FLOAT,
+                          hotel_wifi_score FLOAT,
+                          hotel_cleanliness_score FLOAT,
                           hotel_area VARCHAR(50),
                           hotel_city VARCHAR(50))""")
 
