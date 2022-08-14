@@ -1,12 +1,12 @@
 import requests
 import conf as CFG
-from get_urls import get_urls
+# from get_urls import get_urls
 from bs4 import BeautifulSoup
 import re
 import pymysql.cursors
 from datetime import date
-from create_DB import create_db, create_db_tables
-from tqdm.auto import tqdm
+# from create_DB import create_db, create_db_tables
+# from tqdm.auto import tqdm
 
 
 def scrape_hotel(hotel_soup):
@@ -27,20 +27,14 @@ def scrape_hotel(hotel_soup):
     if price is not None:
         price = price.text
         price = int(re.findall(r'\d+', price)[0])
-    else:
-        price = None
 
     hotel_score = hotel_soup.findChild('div', class_='b5cd09854e d10a6220b4')
     if hotel_score is not None:
         hotel_score = hotel_score.text
-    else:
-        hotel_score = None
 
     hotel_review = hotel_soup.findChild('div', class_='d8eab2cf7f c90c0a70d3 db63693c62')
     if hotel_review is not None:
         hotel_review = int(re.findall(r'\d+', hotel_review.text.replace(',', ''))[0])
-    else:
-        hotel_review = None
 
     url = hotel_soup.findChild('a').get('href')
     return hotel_title, hotel_area, hotel_city, price, hotel_score, hotel_review, url
@@ -111,100 +105,85 @@ def write_facilities_to_DB(facility, facilities_list, cursor, connection, id_hot
         pass
 
 
-def write_to_db(city, check_in_date, check_out_date, adults, PASSWORD):
+def write_to_db(PASSWORD, hotel_dict):
     """
     Parse from the website and write to DB
     """
-    create_db(PASSWORD)
-    create_db_tables(PASSWORD)
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password=PASSWORD,
+                                 database='hotels_booking',
+                                 cursorclass=pymysql.cursors.DictCursor)
 
-    url_list = get_urls(city, check_in_date, check_out_date, adults)
-    response = [requests.get(url, headers=CFG.HEADERS) for url in url_list]
+    cursor = connection.cursor()
 
-    for i in tqdm(range(len(response))):
-        soup = BeautifulSoup(response[i].text, "html.parser")
-        hotels = soup.find_all("div",
-                               class_='a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942')
 
-        for hotel in hotels:
+    # --------------------------------------------------------------
+    # TABLE - hotels
 
-            hotel_title, hotel_area, hotel_city, price, hotel_score, hotel_review, url = scrape_hotel(hotel)
+    sql_select_id = f'''SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_dict['hotel_title']}" AND hotel_city LIKE "{hotel_dict['hotel_city']}"'''
+    cursor.execute(sql_select_id)
+    id_hotel = cursor.fetchall()
+    if len(id_hotel) != 0:
+        id_hotel = id_hotel[0]['id_hotel']
+        sql_update = """UPDATE hotels SET hotel_score=%s, hotel_review=%s, hotel_loc_score=%s,
+        hotel_staff_score=%s, hotel_wifi_score=%s, hotel_cleanliness_score=%s
+                            WHERE id_hotel=%s"""
+        cursor.execute(sql_update, (
+        hotel_dict['hotel_score'], hotel_dict['hotel_review'], hotel_dict['hotel_loc_score'],
+        hotel_dict['hotel_staff_score'], hotel_dict['hotel_wifi_score'],
+        hotel_dict['hotel_cleanliness_score'], id_hotel))
+        connection.commit()
 
-            rs_hotel = requests.get(url, headers=CFG.HEADERS)
-            soup = BeautifulSoup(rs_hotel.text, "html.parser")
-            facilities_scores = soup.find_all('span', class_='c-score-bar__title')
-            score_dict = {}
-            for fac_score in facilities_scores:
-                score_dict[fac_score.text.rstrip("\xa0")] = fac_score.find_next_sibling("span").text
+    else:
+        sql_insert = """INSERT INTO hotels 
+        (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_staff_score, 
+        hotel_wifi_score, hotel_cleanliness_score, hotel_area, hotel_city)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-            hotel_loc_score, hotel_staff_score, hotel_wifi_score, hotel_cleanliness_score = scrap_scores(score_dict)
+        cursor.execute(sql_insert,
+                       (hotel_dict['hotel_title'], hotel_dict['hotel_score'], hotel_dict['hotel_review'],
+                        hotel_dict['hotel_loc_score'], hotel_dict['hotel_staff_score'],
+                        hotel_dict['hotel_wifi_score'], hotel_dict['hotel_cleanliness_score'], hotel_dict['hotel_area'],
+                        hotel_dict['hotel_city']))
+        connection.commit()
+        sql_select_id = f'''SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_dict['hotel_title']}" AND hotel_city LIKE "{hotel_dict['hotel_city']}"'''
+        cursor.execute(sql_select_id)
+        id_hotel = cursor.fetchall()[0]['id_hotel']
+    # --------------------------------------------------------------
+    # TABLE - search_params
+    sql_select_id = f'''SELECT id_search FROM search_params 
+                        WHERE city LIKE "{hotel_dict['city']}" AND check_in_date LIKE "{hotel_dict['check_in_date']}"
+                        AND check_out_date LIKE "{hotel_dict['check_out_date']}"
+                        AND adults LIKE "{hotel_dict['adults']}"'''
+    cursor.execute(sql_select_id)
+    id_search = cursor.fetchall()
+    if len(id_search) == 0:
+        sql_insert = """INSERT INTO search_params (city, check_in_date, check_out_date, adults)
+        VALUES (%s, %s, %s, %s)"""
+        cursor.execute(sql_insert, (hotel_dict['city'], hotel_dict['check_in_date'], hotel_dict['check_out_date'],
+                                    hotel_dict['adults']))
+        connection.commit()
 
-            # --------------------------------------------------------------
-            # WORK WITH DB - TABLE - hotels
-            connection = pymysql.connect(host='localhost',
-                                         user='root',
-                                         password=PASSWORD,
-                                         database='hotels_booking',
-                                         cursorclass=pymysql.cursors.DictCursor)
+        # sql_select_id = f"""SELECT id_search FROM search_params
+        #                 WHERE city LIKE '{city}' AND check_in_date LIKE '{check_in_date}'
+        #                 AND check_out_date LIKE '{check_out_date}'
+        #                 AND adults LIKE '{adults}'"""
+        cursor.execute(sql_select_id)
+        id_search = cursor.fetchall()[0]['id_search']
+    else:
+        id_search = id_search[0]['id_search']
+    # --------------------------------------------------------------
+    #TABLE - price
+    sql_insert = """INSERT INTO price (id_hotel, id_search, timestamp, cheapest_price)
+                    VALUES (%s, %s, %s, %s)"""
+    cursor.execute(sql_insert, (id_hotel, id_search, date.today(), hotel_dict['price']))
+    connection.commit()
 
-            cursor = connection.cursor()
+    # --------------------------------------------------------------
+    # TABLE facilities AND hotels_facilities
 
-            sql_select_id = f'SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_title}" AND hotel_city LIKE "{hotel_city}"'
-            cursor.execute(sql_select_id)
-            id_hotel = cursor.fetchall()
-            if len(id_hotel) != 0:
-                id_hotel = id_hotel[0]['id_hotel']
-                sql_update = """UPDATE hotels SET hotel_score=%s, hotel_review=%s, hotel_loc_score=%s,
-                hotel_staff_score=%s, hotel_wifi_score=%s, hotel_cleanliness_score=%s
-                                    WHERE id_hotel=%s"""
-                cursor.execute(sql_update, (hotel_score, hotel_review, hotel_loc_score, hotel_staff_score, hotel_wifi_score, hotel_cleanliness_score, id_hotel))
-                connection.commit()
+    facilities_list = scrap_facilities(hotel_dict['soup'])
 
-            else:
-                sql_insert = """INSERT INTO hotels 
-                (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_staff_score, 
-                hotel_wifi_score, hotel_cleanliness_score, hotel_area, hotel_city)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-
-                cursor.execute(sql_insert,
-                               (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_staff_score, hotel_wifi_score, hotel_cleanliness_score, hotel_area, hotel_city))
-                connection.commit()
-                sql_select_id = f'SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_title}" AND hotel_city LIKE "{hotel_city}"'
-                cursor.execute(sql_select_id)
-                id_hotel = cursor.fetchall()[0]['id_hotel']
-            # --------------------------------------------------------------
-            # WORK WITH DB - TABLE - search_params
-            sql_select_id = f"""SELECT id_search FROM search_params 
-                                WHERE city LIKE '{city}' AND check_in_date LIKE '{check_in_date}'
-                                AND check_out_date LIKE '{check_out_date}'
-                                AND adults LIKE '{adults}'"""
-            cursor.execute(sql_select_id)
-            id_search = cursor.fetchall()
-            if len(id_search) == 0:
-                sql_insert = """INSERT INTO search_params (city, check_in_date, check_out_date, adults)
-                VALUES (%s, %s, %s, %s)"""
-                cursor.execute(sql_insert, (city, check_in_date, check_out_date, adults))
-                connection.commit()
-
-                sql_select_id = f"""SELECT id_search FROM search_params 
-                                                WHERE city LIKE '{city}' AND check_in_date LIKE '{check_in_date}'
-                                                AND check_out_date LIKE '{check_out_date}'
-                                                AND adults LIKE '{adults}'"""
-                cursor.execute(sql_select_id)
-                id_search = cursor.fetchall()[0]['id_search']
-            else:
-                id_search = id_search[0]['id_search']
-            # --------------------------------------------------------------
-            # WORK WITH DB - TABLE - price
-            sql_insert = """INSERT INTO price (id_hotel, id_search, timestamp, cheapest_price)
-                            VALUES (%s, %s, %s, %s)"""
-            cursor.execute(sql_insert, (id_hotel, id_search, date.today(), price))
-            connection.commit()
-
-            # --------------------------------------------------------------
-            # WORK WITH DB - TABLE - facilities AND hotels_facilities
-
-            facilities_list = scrap_facilities(soup)
-
-            for facility in CFG.FACILITIES:
-                write_facilities_to_DB(facility, facilities_list, cursor, connection, id_hotel)
+    for facility in CFG.FACILITIES:
+        write_facilities_to_DB(facility, facilities_list, cursor, connection, id_hotel)

@@ -44,12 +44,12 @@ def create_url(city, check_in_date, check_out_date, adults, off_set=0):
     return url
 
 
-def get_urls(city, check_in_date, check_out_date, adults) -> tuple[list[Any], Any, Any, Any, Any]:
+def get_urls(hotel_dict) -> tuple[list[Any], Any, Any, Any, Any]:
     """
     Function generate all pages of the same search
     :return: list of urls of all pages in the search
     """
-    url = create_url(city, check_in_date, check_out_date, adults)
+    url = create_url(hotel_dict['city'], hotel_dict['check_in_date'], hotel_dict['check_out_date'], hotel_dict['adults'])
     total_hotel_nums = get_total_hotel_nums(url)
     url_list = [url]
     url_range = (total_hotel_nums//CFG.HOTELS_PER_PAGE)*CFG.HOTELS_PER_PAGE
