@@ -1,91 +1,13 @@
-import requests
-import conf as CFG
-# from get_urls import get_urls
 from bs4 import BeautifulSoup
-import re
+import conf as CFG
 import pymysql.cursors
 from datetime import date
-# from create_DB import create_db, create_db_tables
-# from tqdm.auto import tqdm
-
-
-def scrape_hotel(hotel_soup):
-    """
-    Scrap part of soup to get hotel data from the main page
-    :param hotel_soup:
-    :return: hotel_title, hotel_area, hotel_city, price, hotel_score, hotel_review, url
-    """
-    hotel_title = hotel_soup.findChild('div', class_='fcab3ed991 a23c043802').text
-
-    location = hotel_soup.findChild('span', class_='f4bd0794db b4273d69aa').text
-    if re.search(r'(,\s)', location):
-        hotel_area, hotel_city = location.split(', ')
-    else:
-        hotel_area, hotel_city = None, location
-
-    price = hotel_soup.findChild('span', class_='fcab3ed991 bd73d13072')
-    if price is not None:
-        price = price.text
-        price = int(re.findall(r'\d+', price)[0])
-
-    hotel_score = hotel_soup.findChild('div', class_='b5cd09854e d10a6220b4')
-    if hotel_score is not None:
-        hotel_score = hotel_score.text
-
-    hotel_review = hotel_soup.findChild('div', class_='d8eab2cf7f c90c0a70d3 db63693c62')
-    if hotel_review is not None:
-        hotel_review = int(re.findall(r'\d+', hotel_review.text.replace(',', ''))[0])
-
-    url = hotel_soup.findChild('a').get('href')
-    return hotel_title, hotel_area, hotel_city, price, hotel_score, hotel_review, url
-
-
-def scrap_scores(score_dict):
-    """
-    Scrap hotel page and get different scores: Location, Staff, Free WiFi, Cleanliness,
-    if they are presented on the page
-    :param score_dict:
-    :return:
-    """
-    if 'Location' in score_dict:
-        hotel_loc_score = float(score_dict['Location'])
-    else:
-        hotel_loc_score = None
-
-    if 'Staff' in score_dict:
-        hotel_staff_score = float(score_dict['Staff'])
-    else:
-        hotel_staff_score = None
-
-    if 'Free WiFi' in score_dict:
-        hotel_wifi_score = float(score_dict['Free WiFi'])
-    else:
-        hotel_wifi_score = None
-
-    if 'Cleanliness' in score_dict:
-        hotel_cleanliness_score = float(score_dict['Cleanliness'])
-    else:
-        hotel_cleanliness_score = None
-    return hotel_loc_score, hotel_staff_score, hotel_wifi_score, hotel_cleanliness_score
-
-
-def scrap_facilities(soup):
-    """
-    Scrap hotel page and get different facilities
-    :param soup:
-    :return: facilities_list
-    """
-    facilities = soup.find('div', class_='hotel-facilities__list')
-    facilities_list = [facility.text.split('\n') for facility in facilities]
-    facilities_list = sum(facilities_list, [])
-    return facilities_list
+from scrap_data import scrap_scores, scrape_hotel
 
 
 def write_facilities_to_DB(facility, facilities_list, cursor, connection, id_hotel):
     """
-    Write to DB facility of the hotel
-    :param facility:
-    :param facilities_list:
+    Writes hotel facilities to the DB
     :return: None
     """
     if facility in facilities_list:
@@ -165,10 +87,7 @@ def write_to_db(PASSWORD, hotel_dict):
                                     hotel_dict['adults']))
         connection.commit()
 
-        # sql_select_id = f"""SELECT id_search FROM search_params
-        #                 WHERE city LIKE '{city}' AND check_in_date LIKE '{check_in_date}'
-        #                 AND check_out_date LIKE '{check_out_date}'
-        #                 AND adults LIKE '{adults}'"""
+
         cursor.execute(sql_select_id)
         id_search = cursor.fetchall()[0]['id_search']
     else:
@@ -183,7 +102,7 @@ def write_to_db(PASSWORD, hotel_dict):
     # --------------------------------------------------------------
     # TABLE facilities AND hotels_facilities
 
-    facilities_list = scrap_facilities(hotel_dict['soup'])
+    # facilities_list = scrap_facilities(hotel_dict['soup'])
 
     for facility in CFG.FACILITIES:
-        write_facilities_to_DB(facility, facilities_list, cursor, connection, id_hotel)
+        write_facilities_to_DB(facility, hotel_dict['facilities_list'], cursor, connection, id_hotel)

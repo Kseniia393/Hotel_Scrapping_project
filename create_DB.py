@@ -2,7 +2,7 @@ import pymysql.cursors
 
 
 def create_db(PASSWORD):
-    """Crete DB if not exist yet"""
+    """Creates DB if it doesn't exist yet"""
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  password=PASSWORD,

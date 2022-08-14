@@ -19,7 +19,7 @@ def get_total_hotel_nums(url) -> int:
     return total_hotels
 
 
-def create_url(city, check_in_date, check_out_date, adults, off_set=0):
+def create_url(hotel_dict, off_set=0):
     """
     Function creates the initial url for hotel search.
     Arguments city (-c), check in date (-i), check out date (-o), number of people (-p) are parsed from the CLI.
@@ -36,20 +36,20 @@ def create_url(city, check_in_date, check_out_date, adults, off_set=0):
           "&ss={city}" \
           "&selected_currency=USD" \
           "&offset={limit}".format(
-        check_in=check_in_date,
-        check_out=check_out_date,
-        group_adults=adults,
+        check_in=hotel_dict['check_in_date'],
+        check_out=hotel_dict['check_out_date'],
+        group_adults=hotel_dict['adults'],
         limit=off_set,
-        city=city)
+        city=hotel_dict['city'])
     return url
 
 
 def get_urls(hotel_dict) -> tuple[list[Any], Any, Any, Any, Any]:
     """
-    Function generate all pages of the same search
+    Generates all pages of the  search
     :return: list of urls of all pages in the search
     """
-    url = create_url(hotel_dict['city'], hotel_dict['check_in_date'], hotel_dict['check_out_date'], hotel_dict['adults'])
+    url = create_url(hotel_dict)
     total_hotel_nums = get_total_hotel_nums(url)
     url_list = [url]
     url_range = (total_hotel_nums//CFG.HOTELS_PER_PAGE)*CFG.HOTELS_PER_PAGE
