@@ -5,10 +5,7 @@ URL_TEST = r"https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1DC
 HOTELS_PER_PAGE = 25
 BATCH_SIZE = 5
 
-city=''
-check_in_date =''
-check_out_date =''
-adults = ''
+#password to db is collected from CLI argument:
 PASSWORD = ''
 
 # these are facilities that we are interested in.

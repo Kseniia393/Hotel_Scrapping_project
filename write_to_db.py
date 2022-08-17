@@ -49,12 +49,12 @@ def write_to_db(PASSWORD, hotel_dict):
     if len(id_hotel) != 0:
         id_hotel = id_hotel[0]['id_hotel']
         sql_update = """UPDATE hotels SET hotel_score=%s, hotel_review=%s, hotel_loc_score=%s,
-        hotel_staff_score=%s, hotel_wifi_score=%s, hotel_cleanliness_score=%s
+        hotel_staff_score=%s, hotel_wifi_score=%s, hotel_cleanliness_score=%s, hotel_google_score=%s
                             WHERE id_hotel=%s"""
         cursor.execute(sql_update, (
         hotel_dict['hotel_score'], hotel_dict['hotel_review'], hotel_dict['hotel_loc_score'],
         hotel_dict['hotel_staff_score'], hotel_dict['hotel_wifi_score'],
-        hotel_dict['hotel_cleanliness_score'], id_hotel))
+        hotel_dict['hotel_cleanliness_score'], hotel_dict['hotel_google_score'],  id_hotel))
         connection.commit()
 
     else:
