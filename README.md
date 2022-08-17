@@ -53,11 +53,12 @@ Functions are broken down to files. Each file combines logically connected funct
 | get_urls    | *create_url*           | Function create one url with city, country, check in date and check out date, number of page.<br/>**return:** url                                                                   |
 | get_urls    | *get_urls*             | Function generate all pages of the same search<br/>**return:** list of urls of all pages in the search                                                                              |
 | get_urls    | *get_total_hotel_nums* | Function parse on the url amd find number of all hotels according to transmitted request date. Use this value to create offset number.<br/>**return:** integer number of all hotels |
+ 
 *in italic* - supporting functions
 
 ### DB info
 #### DB ERD
-![img.png](img.png)
+![img_1.png](img_1.png)
 
 #### Table "hotels"
 | column_name        | Description                                      |
