@@ -37,27 +37,39 @@ python main.py -p MYSQL_PASSWORD
 Totally __FREE__ as Open-source. 
 But it is advisable to use (c) ITC by Kseniia Konoshko, Anna Lelchuk, Alexey Konev
 ### Functionality of functions
-| *Function*           | *What do and return*                                                                                                                                                                |
-|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| main                 | Parses arguments from CLI and calls function write_to_db                                                                                                                            |
-| write_to_db          | Create dictionary with hotel data. Populate db tables with collected hotel details                                                                                                  |
-| create_DB            | Checks if DB exists, if not creates database and tables                                                                                                                             |
-| create_url           | Function create one url with city, country, check in date and check out date, number of page.<br/>**return:** url                                                                   |
-| get_urls             | Function generate all pages of the same search<br/>**return:** list of urls of all pages in the search                                                                              |
-| get_total_hotel_nums | Function parse on the url amd find number of all hotels according to transmitted request date. Use this value to create offset number.<br/>**return:** integer number of all hotels |
+Functions are broken down to files. Each file combines logically connected functionality.
+
+| *File*      | *Function*             | *What do and return*                                                                                                                                                                |
+|-------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| main        | main                   | Acts as an orchestrator to program functions. Calls different functions to get CLI apguments, generate urls, scrap data, write to the DB.                                           |
+| main        | parse_cli              | Parses arguments from CLI                                                                                                                                                           |
+| create_DB   | create_DB              | Checks if DB exists, if not creates database                                                                                                                                        |
+| create_DB   | create_db_tables       | Creates db tables                                                                                                                                                                   |
+| scrap_data  | scrap_facilities       | Scraps hotel page and gets different facilities                                                                                                                                     |
+| scrap_data  | scrape_hotel           | Scrap part of soup to get hotel data from the main page: hotel_title, hotel_area, hotel_city, price, hotel_score, hotel_review, url                                                 |
+| api         | api                    | Uses Google search engine API to get information on number of searches done in google for each hotel                                                                                |
+| write_to_db | write_to_db            | Fill database with hotel details                                                                                                                                                    |
+| write_to_db | write_facilities_to_DB | Fill database with hotel facilities                                                                                                                                                 |
+| get_urls    | *create_url*           | Function create one url with city, country, check in date and check out date, number of page.<br/>**return:** url                                                                   |
+| get_urls    | *get_urls*             | Function generate all pages of the same search<br/>**return:** list of urls of all pages in the search                                                                              |
+| get_urls    | *get_total_hotel_nums* | Function parse on the url amd find number of all hotels according to transmitted request date. Use this value to create offset number.<br/>**return:** integer number of all hotels |
+*in italic* - supporting functions
 
 ### DB info
+#### DB ERD
+![img.png](img.png)
 
 #### Table "hotels"
-| column_name     | Description              |
-|-----------------|--------------------------|
-| id_hotel        | Hotel id (Primary key)   |
-| hotel_title     | Hotel name               |
-| hotel_score     | Rating of hotel          |
-| hotel_review    | Number of reviews        |
-| hotel_loc_score | Rating of hotel location |
-| hotel_area      | Hotel area               |
-| hotel_city      | City                     |
+| column_name        | Description                                      |
+|--------------------|--------------------------------------------------|
+| id_hotel           | Hotel id (Primary key)                           |
+| hotel_title        | Hotel name                                       |
+| hotel_score        | Rating of hotel                                  |
+| hotel_review       | Number of reviews                                |
+| hotel_loc_score    | Rating of hotel location                         |
+| hotel_area         | Hotel area                                       |
+| hotel_city         | City                                             |
+| hotel_google_score | Number of searches done in google for each hotel |
 
 #### Table "search_params"
 | column_name    | Description                  |

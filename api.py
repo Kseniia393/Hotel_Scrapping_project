@@ -2,6 +2,11 @@ import requests
 
 
 def get_hotel_google_score(query):
+    """
+    Uses Google search engine API to get information on number of searches done in google for each hotel.
+    :param query: API query
+    :return: number of searches done in google for each hotel (integer)
+    """
     key = "AIzaSyBLqeARFRp_PUA6xaagPuowDkrPHNzwAtI"
     cx="719545adf2b7d4a0b"
 
@@ -16,9 +21,3 @@ def get_hotel_google_score(query):
     hotel_google_score = response_json['queries']['request'][0]['totalResults']
     return int(hotel_google_score)
 
-#
-# q = 'Residence 26 TelAviv'
-# print(type(get_hotel_google_score(q)))
-# print(
-#     get_hotel_google_score(q)
-# )
