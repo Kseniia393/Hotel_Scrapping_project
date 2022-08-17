@@ -8,8 +8,11 @@ def scrap_facilities(soup):
     :return: facilities_list
     """
     facilities = soup.find('div', class_='hotel-facilities__list')
-    facilities_list = [facility.text.split('\n') for facility in facilities]
-    facilities_list = sum(facilities_list, [])
+    if facilities:
+        facilities_list = [facility.text.split('\n') for facility in facilities]
+        facilities_list = sum(facilities_list, [])
+    else:
+        facilities_list = []
     return facilities_list
 
 

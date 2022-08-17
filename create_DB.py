@@ -35,7 +35,8 @@ def create_db_tables(PASSWORD):
                           hotel_wifi_score FLOAT,
                           hotel_cleanliness_score FLOAT,
                           hotel_area VARCHAR(50),
-                          hotel_city VARCHAR(50))""")
+                          hotel_city VARCHAR(50),
+                          hotel_google_score INT)""")
 
         cursor.execute("""CREATE TABLE facilities (
                           id_facilities INT PRIMARY KEY AUTO_INCREMENT,

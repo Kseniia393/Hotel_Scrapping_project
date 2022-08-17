@@ -60,14 +60,14 @@ def write_to_db(PASSWORD, hotel_dict):
     else:
         sql_insert = """INSERT INTO hotels 
         (hotel_title, hotel_score, hotel_review, hotel_loc_score, hotel_staff_score, 
-        hotel_wifi_score, hotel_cleanliness_score, hotel_area, hotel_city)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        hotel_wifi_score, hotel_cleanliness_score, hotel_area, hotel_city, hotel_google_score)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         cursor.execute(sql_insert,
                        (hotel_dict['hotel_title'], hotel_dict['hotel_score'], hotel_dict['hotel_review'],
                         hotel_dict['hotel_loc_score'], hotel_dict['hotel_staff_score'],
                         hotel_dict['hotel_wifi_score'], hotel_dict['hotel_cleanliness_score'], hotel_dict['hotel_area'],
-                        hotel_dict['hotel_city']))
+                        hotel_dict['hotel_city'], hotel_dict['hotel_google_score']))
         connection.commit()
         sql_select_id = f'''SELECT id_hotel FROM hotels WHERE hotel_title LIKE "{hotel_dict['hotel_title']}" AND hotel_city LIKE "{hotel_dict['hotel_city']}"'''
         cursor.execute(sql_select_id)

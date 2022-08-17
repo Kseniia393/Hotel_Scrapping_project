@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
 from scrap_data import scrap_facilities, scrape_hotel, scrap_scores
+from api import get_hotel_google_score
 
 
 def parse_cli():
@@ -63,7 +64,7 @@ def main():
             hotel_dict['hotel_title'], hotel_dict['hotel_area'], hotel_dict['hotel_city'], hotel_dict['price'], \
             hotel_dict['hotel_score'], hotel_dict['hotel_review'], hotel_dict['url'] = scrape_hotel(hotel)
 
-            # print(hotel_dict['hotel_title'])
+            print(hotel_dict['hotel_title'])
 
             rs_hotel = requests.get(hotel_dict['url'], headers=CFG.HEADERS)
             hotel_dict['soup'] = BeautifulSoup(rs_hotel.text, "html.parser")
@@ -77,6 +78,11 @@ def main():
             hotel_dict['hotel_cleanliness_score'] = scrap_scores(score_dict)
 
             hotel_dict['facilities_list'] = scrap_facilities(hotel_dict['soup'])
+            query_for_api = hotel_dict['hotel_title'] + hotel_dict['hotel_city']
+            try:
+                hotel_dict['hotel_google_score'] = get_hotel_google_score(query_for_api)
+            except KeyError:
+                hotel_dict['hotel_google_score'] = None
 
             # write all collected data to the DB:
             write_to_db(CFG.PASSWORD, hotel_dict)
