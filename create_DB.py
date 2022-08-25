@@ -1,26 +1,27 @@
 import pymysql.cursors
+import conf as CFG
 
 
 def create_db(PASSWORD):
     """Creates DB if it doesn't exist yet"""
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
+    connection = pymysql.connect(host=CFG.DB_HOST,
+                                 user=CFG.DB_USER,
                                  password=PASSWORD,
                                  cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
 
     try:
-        cursor.execute("""CREATE DATABASE hotels_booking""")
+        cursor.execute(f"""CREATE DATABASE {CFG.DB_NAME}""")
     except:  # TODO - specific exception to be raised
         pass
 
 
 def create_db_tables(PASSWORD):
     """Create Tables in DB and Insert values into table facilities"""
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
+    connection = pymysql.connect(host=CFG.DB_HOST,
+                                 user=CFG.DB_USER,
                                  password=PASSWORD,
-                                 database='hotels_booking',
+                                 database=CFG.DB_NAME,
                                  cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
 

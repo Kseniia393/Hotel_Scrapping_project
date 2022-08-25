@@ -39,10 +39,10 @@ def parse_cli():
     :return: CLI arguments (city, check_in_date, check_out_date, adults, CFG.PASSWORD)
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', "--city", default="Tel Aviv")
-    parser.add_argument('-i', "--check_in_date", default="2022-12-31")
-    parser.add_argument('-o', "--check_out_date", default="2023-01-01")
-    parser.add_argument('-a', "--adults", default="2")
+    parser.add_argument('-c', "--city", default="Tel Aviv", help='Enter city name in any format. Default is "Tel Aviv"')
+    parser.add_argument('-i', "--check_in_date", default="2022-12-31", help='Enter check in date in format yyyy-mm-dd. Default is "2022-12-31"')
+    parser.add_argument('-o', "--check_out_date", default="2023-01-01", help='Enter check out date in format yyyy-mm-dd. Default is "2023-01-01"')
+    parser.add_argument('-a', "--adults", default="2", help='Enter number of adults travelling (integer). Default is "2"')
     parser.add_argument('-p', "--password")
     args = parser.parse_args()
 
