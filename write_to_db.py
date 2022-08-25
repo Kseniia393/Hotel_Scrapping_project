@@ -31,10 +31,10 @@ def write_to_db(PASSWORD, hotel_dict):
     """
     Parse from the website and write to DB
     """
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
+    connection = pymysql.connect(host=CFG.DB_HOST,
+                                 user=CFG.DB_USER,
                                  password=PASSWORD,
-                                 database='hotels_booking',
+                                 database=CFG.DB_NAME,
                                  cursorclass=pymysql.cursors.DictCursor)
 
     cursor = connection.cursor()
