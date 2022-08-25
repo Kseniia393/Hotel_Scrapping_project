@@ -2,3 +2,4 @@ __pycache__/
 hotels.csv
 *.png
 *.log
+*.sql
