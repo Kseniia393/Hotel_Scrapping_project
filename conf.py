@@ -15,9 +15,9 @@ API_KEY = ''
 # these are facilities that we are interested in.
 FACILITIES = ['Non-smoking rooms', 'Business centre', 'Free parking', '24-hour front desk', 'Laundry', 'Airport shuttle']
 
-DB_HOST='data-mining-db1.cttpnp4olbpx.us-west-1.rds.amazonaws.com',
-DB_USER='alexey_anna_kseniia'
-DB_NAME='alexey_anna_kseniia'
+DB_HOST = 'data-mining-db1.cttpnp4olbpx.us-west-1.rds.amazonaws.com'
+DB_USER = 'alexey_anna_kseniia'
+DB_NAME = 'alexey_anna_kseniia'
 
 # connection = pymysql.connect(host='localhost',
 #                              user='root',
