@@ -9,6 +9,9 @@ LOG_FILE = 'log_booking_scrap'
 #password to db is collected from CLI argument:
 PASSWORD = ''
 
+#Google Engine API key is collected from CLI argument:
+API_KEY = ''
+
 # these are facilities that we are interested in.
 FACILITIES = ['Non-smoking rooms', 'Business centre', 'Free parking', '24-hour front desk', 'Laundry', 'Airport shuttle']
 

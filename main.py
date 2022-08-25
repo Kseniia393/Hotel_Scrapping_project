@@ -43,7 +43,9 @@ def parse_cli():
     parser.add_argument('-i', "--check_in_date", default="2022-12-31", help='Enter check in date in format yyyy-mm-dd. Default is "2022-12-31"')
     parser.add_argument('-o', "--check_out_date", default="2023-01-01", help='Enter check out date in format yyyy-mm-dd. Default is "2023-01-01"')
     parser.add_argument('-a', "--adults", default="2", help='Enter number of adults travelling (integer). Default is "2"')
-    parser.add_argument('-p', "--password")
+    parser.add_argument('-p', "--password", help='Enter password to mysql db. It will not be saved in the code')
+    parser.add_argument('-k', "--key", help='Enter Google Engine API key. It will not be saved in the code')
+
     args = parser.parse_args()
 
     city = args.city
@@ -51,6 +53,7 @@ def parse_cli():
     check_out_date = args.check_out_date
     adults = args.adults
     CFG.PASSWORD = args.password
+    CFG.API_KEY = args.key
 
     return city, check_in_date, check_out_date, adults, CFG.PASSWORD
 

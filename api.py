@@ -1,4 +1,6 @@
 import requests
+import conf as CFG
+
 
 
 def get_hotel_google_score(query):
@@ -7,7 +9,7 @@ def get_hotel_google_score(query):
     :param query: API query
     :return: number of searches done in google for each hotel (integer)
     """
-    key = "AIzaSyBLqeARFRp_PUA6xaagPuowDkrPHNzwAtI"
+    key = CFG.API_KEY
     cx="719545adf2b7d4a0b"
 
     url = "https://www.googleapis.com/customsearch/v1?"
