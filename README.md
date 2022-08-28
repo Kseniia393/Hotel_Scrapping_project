@@ -58,7 +58,10 @@ Functions are broken down to files. Each file combines logically connected funct
 
 ### DB info
 #### DB ERD
-![img_1.png](img_1.png)
+<p align="left">
+<img src="img/Booking_scrap_ERD.png" width=500></p>
+
+[//]: # (![img_1.png]&#40;img_1.png&#41;)
 
 #### Table "hotels"
 | column_name        | Description                                      |
